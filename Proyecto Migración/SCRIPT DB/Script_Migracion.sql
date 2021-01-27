@@ -1,4 +1,4 @@
-CREATE DATABASE migracion;
+﻿CREATE DATABASE migracion;
 USE migracion;
 
 CREATE TABLE sede_migracion
