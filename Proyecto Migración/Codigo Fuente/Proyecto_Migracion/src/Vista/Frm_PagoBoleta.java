@@ -5,12 +5,26 @@
  */
 package Vista;
 
+import com.sun.jdi.connect.spi.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Nay Ale
  */
 public class Frm_PagoBoleta extends javax.swing.JFrame {
 
+    
+    private final String base = "Banrural01";
+    private final String user = "root";
+    private final String password = "1245";
+    private final String url = "jdbc:mysql://localhost/" + base;
+    private Connection con = null;
     /**
      * Creates new form Frm_PagoBoleta
      */
@@ -141,9 +155,45 @@ public class Frm_PagoBoleta extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarActionPerformed
-        
+             try{
+            java.sql.Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/Banrural02", "root", "");
+            PreparedStatement pst = cn.prepareStatement("insert into Pboleta values(?,?,?,?,?,?)");
+            
+           pst.setString(1, "0");
+           pst.setString(2, txtNum_Boleta.getText().trim());
+           pst.setString(3, txtNum_Recibo.getText().trim());
+           pst.setString(4, txtFecha_Boleta.getText().trim());
+           pst.setString(5, txtMonto_Pagar.getText().trim());
+           pst.setString(6, txtDescrip_Boleta.getText().trim());
+           pst.executeUpdate();
+            
+          
+            txtNum_Boleta.setText("");
+            txtNum_Recibo.setText("");
+            txtFecha_Boleta.setText("");
+            txtMonto_Pagar.setText("");
+            txtDescrip_Boleta.setText("");
+            
+           // label_status.setText("Registro exitoso.");
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(null, "boleta registrada.");
+        }    
     }//GEN-LAST:event_GuardarActionPerformed
-
+    public Connection getConexion()
+    {
+        
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            con = (Connection) DriverManager.getConnection(this.url, this.user, this.password);
+            
+        } catch(SQLException e)
+        {
+            System.err.println(e);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Frm_PagoBoleta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      return con;  
+    }
     /**
      * @param args the command line arguments
      */

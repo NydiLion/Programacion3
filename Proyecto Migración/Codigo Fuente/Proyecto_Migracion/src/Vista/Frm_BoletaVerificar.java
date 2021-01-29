@@ -5,12 +5,26 @@
  */
 package Vista;
 
+import com.sun.jdi.connect.spi.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Nay Ale
  */
 public class Frm_BoletaVerificar extends javax.swing.JFrame {
-
+    private final String base = "Banrural01";
+    private final String user = "root";
+    private final String password = "1245";
+    private final String url = "jdbc:mysql://localhost/" + base;
+    private Connection con = null;
+   
     /**
      * Creates new form Frm_BoletaVerificar
      */
@@ -116,9 +130,39 @@ public class Frm_BoletaVerificar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void Btn_VerificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_VerificarActionPerformed
+       try{
+            java.sql.Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/Banrural01", "root", "");
+            PreparedStatement pst = cn.prepareStatement("select * from boleta where ID = ?");
+            pst.setString(1, Jtext_Boleta.getText().trim());
+            pst.setString(2, Jtext_Recibo.getText().trim());
+            ResultSet rs = pst.executeQuery();
+                    if(rs.next()){
+                Jtext_Boleta.setText(rs.getString("num_boleta"));
+                Jtext_Recibo.setText(rs.getString("num_recibo"));
+               
+            } else {
+                JOptionPane.showMessageDialog(null, "boleta no registrada.");
+            }
+
+        }catch (Exception e){
+        }
        
     }//GEN-LAST:event_Btn_VerificarActionPerformed
-
+public Connection getConexion()
+    {
+        
+        try{
+            Class.forName("com.mysql.jdbc.Driver");
+            con = (Connection) DriverManager.getConnection(this.url, this.user, this.password);
+            
+        } catch(SQLException e)
+        {
+            System.err.println(e);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Frm_BoletaVerificar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      return con;  
+    }
     /**
      * @param args the command line arguments
      */
